@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/6cbb336d-a30f-4bd6-a5d8-77ea7462c888/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/cis410-fa21-milliken-api",
+    "appService.deploySubpath": "."
+}
