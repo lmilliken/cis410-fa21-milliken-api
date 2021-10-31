@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 
 const db = require("./dbConnectExec.js");
 const rockwellConfig = require("./config.js");
+const auth = require("./middleware/authenticate")
 
 const app = express();
 app.use(express.json());
@@ -22,6 +23,40 @@ app.get("/", (req, res) => {
 
 // app.post()
 // app.put()
+
+
+
+app.post("/reviews", auth,async (req, res)=>{
+try{
+  let movieFK = req.body.movieFK;
+  let summary = req.body.summary;
+  let rating = req.body.rating;
+
+  if(!movieFK || !summary|| !rating || !Number.isInteger(rating)){return res.status(400).send("bad request")};
+
+  summary = summary.replace("'","''");
+
+  // console.log("summary", summary);
+  // console.log("here is the contact", req.contact);
+
+  let insertQuery = `INSERT INTO review(Summary, Rating, MovieFK, ContactFK)
+  OUTPUT inserted.ReviewPK, inserted.Summary, inserted.Rating, inserted.MovieFK
+  VALUES('${summary}', '${rating}', '${movieFK}', ${req.contact.ContactPK})`;
+
+  let insertedReview = await db.executeQuery(insertQuery);
+  // console.log("inserted review", insertedReview);
+  // res.send("here is the repsonse");
+  res.status(201).send(insertedReview[0]);
+}
+catch(err){
+  console.log("error in POST /reviews", err);
+  res.status(500).send();
+}
+})
+
+app.get("/contacts/me",auth,(req,res)=>{
+  res.send(req.contact)
+})
 
 app.post("/contacts/login", async (req, res) => {
   // console.log("/contacts/login called", req.body);
