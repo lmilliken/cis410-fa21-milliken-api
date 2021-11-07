@@ -30,7 +30,30 @@ app.get("/", (req, res) => {
 // app.post()
 // app.put()
 
+app.post("/contacts/logout", auth, (req,res)=>{
+  let query = `UPDATE Contact
+  SET token = NULL
+  WHERE ContactPK = ${req.contact.ContactPK}`;
 
+  db.executeQuery(query)
+    .then(()=>{res.status(200).send()})
+    .catch((err)=>{
+      console.log("error in POST /contacts/logout", err);
+      res.status(500).send()
+    })
+})
+
+// app.get("/reviews/me", auth, async(req,res)=>{
+//   //1. get the ContactPK
+//   //2. query the database for user's records
+//   //3. send user's reviews back to them
+// })
+
+// app.patch("/reviews/:pk", auth, async(req,res)=>{
+
+// })
+
+// app.delete("/reviews/:pk")
 
 app.post("/reviews", auth,async (req, res)=>{
 try{
